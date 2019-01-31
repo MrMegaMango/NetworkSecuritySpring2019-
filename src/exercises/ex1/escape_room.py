@@ -7,7 +7,7 @@ class EscapeRoom:
         '''This method initializes the game'''
         print("started")
         global time,code,comma_digit_list,look_glasses,glasses,look_hairpin,hairpin,look_board,floor,prying,mirror,look_hammer,hammer,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
-        time=3
+        time=100
         code=random.randint(0,9999)
         code_string=str(code)
         while len(code_string)<4:
