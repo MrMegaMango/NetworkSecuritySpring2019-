@@ -55,7 +55,7 @@ class EscapeRoom:
 
             elif command_list[1] == "floor":
                 print("The floor makes you nervous. It feels like it could fall in. One of the boards is loose.")
-                floor=1
+                look_board=1
 
             elif command_list[1] == "board":
                 if floor == 0:
@@ -165,7 +165,6 @@ class EscapeRoom:
                 else: #only thing left is "anything else from chest or board"
                     print("You don't see that.")
 
-
         elif command_list[0]=="unlock":
             #print("unlock")
             if command_list[1]=="chest":
@@ -239,8 +238,6 @@ class EscapeRoom:
             else:
                 print("You don't see that.")
 
-
-
         elif command_list[0]=="pry":
             #print("pry")
             if command_list[1]=="board":
@@ -283,10 +280,14 @@ class EscapeRoom:
                 print("You dont have a "+command_list[-1]+".")
 
         elif command_list[0]=="inventory":
+            if hairpin==1:
+                inventory = "a hairpin"
             if hammer==1:
-                inventory = "a hammer"
+                inventory = "a hairpin, a hammer"
             if glasses==1:
-                inventory = "a hammer, a glasses"
+                inventory = "a hairpin, a hammer, a glasses"
+
+
             print("You are carrying:"+ inventory +".") #todo: item list
 
 
@@ -319,3 +320,41 @@ def main():
 if __name__=="__main__":
 
     main()
+
+# self=EscapeRoom()
+# self.start()
+#
+# self.command("look")
+# self.command("look door")
+# self.command("look mirror")
+# self.command("look mirror")
+# self.command("look chest")
+# self.command("look board")
+# self.command("look floor")
+# self.command("look board")
+# self.command("look hairpin")
+# self.command("look hammer")
+# self.command("look clock")
+# self.command("look mango")
+# self.command("look")
+# self.command("look in chest")
+# self.command("look in board")
+# self.command("look in manman")
+# self.command("look in board")
+# self.command("get hairpin")
+# self.command("get hairpin")
+# self.command("get board")
+# self.command("get apple")
+# self.command("get door")
+# self.command("unlock chest with hairpin")
+# self.command("unlock clocke with hairpin")
+# self.command("inventory")
+# self.command("get hairpin")
+# self.command("unlock chest with hairpin")
+# self.command("open chest")
+# self.command("get hammer from chest")
+# self.command("look floor")
+# self.command("pry board with hammer")
+# self.command("get glasses from board")
+# self.command("look door")
+# self.command("unlock door with 1736")
