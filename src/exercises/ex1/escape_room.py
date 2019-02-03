@@ -8,7 +8,7 @@ class EscapeRoom:
         print("started")
         global time,code,comma_digit_list,look_glasses,glasses,look_hairpin,hairpin,look_board,floor,prying,mirror,look_hammer,hammer,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
         time=100
-        code=random.randint(0,9999)
+        code=random.randint(1000,9999)
         code_string=str(code)
         while len(code_string)<4:
             code_string='0'+code_string
@@ -38,7 +38,7 @@ class EscapeRoom:
                 print ("You are in a locked room. There is only one door and it has a numeric keypad. Above the door is a clock that reads " + str(time) + ". Across from the door is a large mirror. Below the mirror is an old chest. The room is old and musty and the floor is creaky and warped."+str(code))
 
             elif command_list[1] == "door":
-                if glasses == 0:
+                if wear_glasses == 0:
                     print("The door is strong and highly secured. The door is locked and requires a 4-digit code to open.")
                 else:
                     print("The door is strong and highly secured. The door is locked and requires a 4-digit code to open. But now you're wearing these glasses you notice something! There are smudges on the digits "+comma_digit_list+".")
