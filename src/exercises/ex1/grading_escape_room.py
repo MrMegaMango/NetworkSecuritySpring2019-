@@ -71,7 +71,6 @@ class EscapeRoom:
                         look_glasses=1
                 else:
                     return "You can't look in that!"
-                    return
                 if item:
                     item=" a "+item
                 return "Inside the "+command_list[2]+" you see:"+item+"."
