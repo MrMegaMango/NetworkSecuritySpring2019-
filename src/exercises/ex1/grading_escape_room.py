@@ -1,7 +1,7 @@
 import random
 class EscapeRoom:
     def start(self):
-        global time,code,comma_digit_list,look_glasses,glasses,look_hairpin,hairpin,look_board,floor,prying,mirror,look_hammer,hammer,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
+        global time,code,comma_digit_list,look_glasses,glasses,look_hairpin,hairpin,look_board,mirror,look_hammer,hammer,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
         time=100
         code=random.randint(0,9999)
         code_string=str(code)
@@ -9,10 +9,10 @@ class EscapeRoom:
             code_string='0'+code_string
         code_string=list(set(code_string))  #to remove duplicates
         comma_digit_list=",".join(sorted(code_string))
-        glasses, look_hairpin, hairpin, look_board, floor, prying, mirror, look_hammer, hammer, look_glasses, glasses, unlock_chest, user_code, unlock_door,open_chest,pry_board,wear_glasses,status = (0,)*18
+        glasses, look_hairpin, hairpin, look_board, mirror, look_hammer, hammer, look_glasses, glasses, unlock_chest, user_code, unlock_door,open_chest,pry_board,wear_glasses,status = (0,)*16
         inventory=""
     def command(self, command_string):
-        global time,code,comma_digit_list,glasses,look_hairpin,hairpin,look_board,floor,prying,mirror,look_hammer,hammer,look_glasses,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
+        global time,code,comma_digit_list,glasses,look_hairpin,hairpin,look_board,mirror,look_hammer,hammer,look_glasses,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
         time=time-1
         command_list=command_string.split(' ')
         if command_list[0] == "look":
@@ -25,21 +25,21 @@ class EscapeRoom:
                     return "The door is strong and highly secured. The door is locked and requires a 4-digit code to open. But now you're wearing these glasses you notice something! There are smudges on the digits "+comma_digit_list+"."
             elif command_list[1] == "mirror":
                 if look_hairpin == 0:
-                    return "You look in the mirror and see yourself... wait, there's a hairpin in your hair. Where did that come from?"
                     look_hairpin = 1
+                    return "You look in the mirror and see yourself... wait, there's a hairpin in your hair. Where did that come from?"
                 else:
                     return "You look in the mirror and see yourself."
             elif command_list[1] == "chest":
                 return "An old chest. It looks worn, but it's still sturdy."
             elif command_list[1] == "floor":
-                return "The floor makes you nervous. It feels like it could fall in. One of the boards is loose."
                 look_board=1
+                return "The floor makes you nervous. It feels like it could fall in. One of the boards is loose."
             elif command_list[1] == "board":
-                if floor == 0:
+                if look_board == 0:
                     return "You don't see that here."
-                elif prying == 0:
+                elif pry_board == 0:
+                    look_board=1 #might not be needed
                     return "The board is loose, but won't come up when you pull on it. Maybe if you pried it open with something."
-                    look_board=1
                 else:
                     return "The board has been pulled open. You can look inside."
             elif command_list[1] == "hairpin":
@@ -119,8 +119,8 @@ class EscapeRoom:
                             if pry_board==0: #pry board, not open board
                                 return "It's not open."
                             else:
-                                return "You got it."
                                 glasses=1
+                                return "You got it."
                     else:
                         return "You don't see that."
                 elif command_list[-1] not in ["chest","board"]: #does not in work?
@@ -177,8 +177,8 @@ class EscapeRoom:
                     return "It's already open!"
             elif command_list[1] == "door":
                 if unlock_door == 1:
-                    return "You open the door."
                     status=1
+                    return "You open the door."
                 else:
                     return "It's locked."
             elif command_list[1] == "hairpin" and look_hairpin:
@@ -203,7 +203,7 @@ class EscapeRoom:
                             return "You don't have a hammer."
                         else:
                             pry_board=1
-                            return "You use the hammer to pry open the board. It takes some work, but with some blood and sweat, you mange to get it open."
+                            return "You use the hammer to pry open the board. It takes some work, but with some blood and sweat, you manage to get it open."
 
                 else:
                     return "It's already pried open."
@@ -225,8 +225,8 @@ class EscapeRoom:
                     if glasses==0:
                         return "You don't have a glasses."
                     else:
-                        return "You are now wearing the glasses."
                         wear_glasses=1
+                        return "You are now wearing the glasses."
                 else:
                     return "You are already wearing them!"
             else:
@@ -258,7 +258,6 @@ def main():
     if room.status()=="escaped":
         return "Congratulations! You escaped!"
     else:
-        return "Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas..."
-        return "Sorry. You died."
+        return "Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas... Sorry. You died."
 if __name__=="__main__":
     main()
