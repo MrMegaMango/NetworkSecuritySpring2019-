@@ -172,7 +172,6 @@ class EscapeRoom:
                     else:
                         open_chest=1
                         return "You open the chest."
-
                 else:
                     return "It's already open!"
             elif command_list[1] == "door":
@@ -204,7 +203,6 @@ class EscapeRoom:
                         else:
                             pry_board=1
                             return "You use the hammer to pry open the board. It takes some work, but with some blood and sweat, you manage to get it open."
-
                 else:
                     return "It's already pried open."
             elif command_list[1] == "hairpin" and look_hairpin:
