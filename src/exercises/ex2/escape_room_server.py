@@ -1,8 +1,17 @@
 from escape_room import EscapeRoom
+import socket
 
-server_socket.listen(1)
+HOST=''
+PORT=50007
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen(1)
+
+
+#server_socket.listen(1)
 while True:
-    conn, addr = server_socket.accept()
+    conn, addr = s.accept()
     room=EscapeRoom()      # create an escape room
     room.start()
     while room.status()=="locked":      # while the escape room status is locked
@@ -21,4 +30,4 @@ while True:
 #         else:
 
 #             return "Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas... Sorry. You died."
-   conn.close()
+    conn.close()
