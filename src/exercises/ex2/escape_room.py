@@ -14,6 +14,8 @@ class EscapeRoom:
     def command(self, command_string):
         global time,code,comma_digit_list,glasses,look_hairpin,hairpin,look_board,mirror,look_hammer,hammer,look_glasses,glasses,unlock_chest,user_code,unlock_door,open_chest,pry_board,wear_glasses,inventory,status
         time=time-1
+        if time==0:
+            status=2
         command_list=command_string.split(' ')
         if command_list[0] == "look":
             if len(command_list)==1:
@@ -239,8 +241,7 @@ class EscapeRoom:
             if glasses==1:
                 inventory = "a hairpin, a hammer, a glasses"
             return "You are carrying:"+ inventory +"."
-        if time==0:
-            status=2
+
     def status(self):
         global status
         if status == 0:
@@ -255,6 +256,7 @@ def main():
     while room.status()=="locked":
         command = input (">> ")
         output = room.command(command)
+        print(output)
     if room.status()=="escaped":
         return "Congratulations! You escaped!"
     else:
