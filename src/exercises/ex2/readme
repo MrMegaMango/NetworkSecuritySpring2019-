@@ -1,0 +1,4 @@
+If you don't want to use the default port, use --port flag, for example: $ python3 escape_room_server.py --port 9994
+
+You can play on multiple clients playing their own games.
+currently the server does not accept more clients after one client exits
