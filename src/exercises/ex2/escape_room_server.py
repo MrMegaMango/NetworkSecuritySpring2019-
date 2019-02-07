@@ -1,9 +1,18 @@
 from escape_room import EscapeRoom
+import select
 import socket
 HOST='0.0.0.0'
 PORT=11113
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+#for extra credit
+print("choose your 5 digit port")
+PORT=input(">> ")
+PORT=int(PORT)
 s.bind((HOST, PORT))
+print("connected to port "+str(PORT))
+#end of extra credit part
+
 s.listen(1)
 while True:
 	conn, addr = s.accept()
