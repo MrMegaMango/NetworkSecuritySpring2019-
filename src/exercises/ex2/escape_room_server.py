@@ -6,7 +6,7 @@ PORT=11113
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #for extra credit
-print("choose your 5 digit port")
+print("choose your port")
 PORT=input(">> ")
 PORT=int(PORT)
 s.bind((HOST, PORT))
