@@ -25,7 +25,7 @@ def main(PORT):
 					datastr=data.decode()
 					datastr=datastr.replace('\r\n','')
 					output = room[i].command(datastr) # encode converts from bytes to string
-					print(output)
+					#print(output)
 					try:					
 						if output:
 							server.sendall(output.encode())               # send the output.encode() to conn (encode converts from string to bytes)
