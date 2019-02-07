@@ -1,7 +1,7 @@
 from escape_room import EscapeRoom
 import socket
-HOST='127.0.0.1'
-PORT=10054
+HOST='0.0.0.0'
+PORT=11113
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
 s.listen(1)
@@ -14,9 +14,13 @@ while True:
 		datastr=data.decode()
 		datastr=datastr.replace('\r\n','')
 		output = room.command(datastr) # encode converts from bytes to string
-		conn.sendall(output.encode())               # send the output.encode() to conn (encode converts from string to bytes)
+		if output:
+			conn.sendall(output.encode())               # send the output.encode() to conn (encode converts from string to bytes)
+		else:
+			conn.sendall("invalid input".encode())
 	if room.status()=="escaped":
 		conn.sendall("Congratulations! You escaped!".encode())
 	else:
 		conn.sendall("Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas... Sorry. You died.".encode())
 	conn.close()
+	break
