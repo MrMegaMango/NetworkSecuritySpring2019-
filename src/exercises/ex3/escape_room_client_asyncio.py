@@ -2,19 +2,36 @@ import select
 import socket
 import sys
 import argparse
-def main(PORT):
-	HOST = '0.0.0.0'
-	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-		s.connect((HOST,PORT))
-		while True:
-			command = input (">> ")
-			s.send(command.encode())
-			data = s.recv(1024)
-			data = data.decode()
-			print(data)
-			if data == "You open the door.Congratulations! You escaped!" or data == "Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas... Sorry. You died.":				
-				break
+import asyncio
+import time
+class EscapeRoomClientProtocol(asyncio.Protocol):
+	def __init__(self,message):
+		message = ""
+		self.message=message
+		#global PORT
+		#HOST = '0.0.0.0'
+			#print("init")
+		#with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+			#s.connect((HOST,PORT))
+
+			#command = input (">> ")
+				
+
+
+
+
+	def connection_made(self,transport):
+		time.sleep(1)
+		message = input (">> ")
+		print("stop")
+		self.message=message
+		transport.write(self.message.encode())
+	def data_received(self,data):
+		print(data.decode())
+		
+
 if __name__=="__main__":
+    #global PORT
     parser = argparse.ArgumentParser()
     parser.add_argument("--port",help="the port you choose")
     args=parser.parse_args()
@@ -23,4 +40,12 @@ if __name__=="__main__":
         PORT=int(args.port)
     else:
         PORT=1121
-    main(PORT)
+    #main(PORT)
+    loop=asyncio.get_event_loop()
+    message = "hi88"
+    coro=loop.create_connection(lambda: EscapeRoomClientProtocol(message),'0.0.0.0',PORT)
+    print("hi")
+    loop.run_until_complete(coro)
+    print("hi2")
+    loop.run_forever()
+    looop.close()
