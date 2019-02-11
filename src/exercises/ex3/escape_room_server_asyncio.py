@@ -26,13 +26,6 @@ class EscapeRoomServerClientProtocol(asyncio.Protocol):
 		elif room.status()=="died":
 			self.transport.write("Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas... Sorry. You died.".encode())
 					
-
-
-
-
-
-
-
 async def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port",help="the port you choose")
@@ -43,9 +36,6 @@ async def main():
     else:
         PORT=1121
 
-
-    global room
-    room=[]
     loop = asyncio.get_event_loop()
     coro = loop.create_server(EscapeRoomServerClientProtocol, '0.0.0.0',PORT)
     server = loop.run_until_complete(coro)
@@ -57,5 +47,3 @@ async def main():
     server.close()
     loop.run_until_complete(server.wait_closed())
     loop.close()
-    #main(PORT).serve()
-
