@@ -1,29 +1,52 @@
+from escape_room import EscapeRoom
 import argparse
 import asyncio
-class EscapeRoomClientProtocol(asyncio.Protocol):
 
-	def connection_made(self,transport):
-		command= input(">> ")
-		self.command=command
-		self.transport=transport
-		transport.write(self.command.encode())
+class EscapeRoomServerClientProtocol(asyncio.Protocol):
+    def connection_made(self,transport):
+        global room
+        self.transport=transport
+        room=EscapeRoom()
+        room.start()
+    def data_received(self,data):
+        global room
+        datastr=data.decode()
+        datastr=datastr.replace('\r\n','')
+        if room.status()=="locked":
+            output = room.command(datastr) # encode converts from bytes to string
+                #print(output)
+        try:
+            if output:
+                self.transport.write(output.encode())               # send the output.encode() to conn (encode converts from string to bytes)
+            else:
+                self.transport.write("invalid input".encode())
+        except BrokenPipeError:
+            print("pipe")
+        if room.status()=="escaped":
+            self.transport.write("Congratulations! You escaped!".encode())
 
-	def data_received(self,data):
-		print(data.decode())
-		command = input (">> ")
-		self.transport.write(command.encode())
+        elif room.status()=="died":
+            self.transport.write("Oh no! The clock starts ringing!!! After a few seconds, the room fills with a deadly gas... Sorry. You died.".encode())
 
-if __name__=="__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--port",help="the port you choose")
-    args=parser.parse_args()
-    if args.port:
-        print("We are connected to port "+args.port+". Now let't play this deadly game.")
-        PORT=int(args.port)
-    else:
-        PORT=1121
-    loop=asyncio.get_event_loop()
-    coro=loop.create_connection(lambda: EscapeRoomClientProtocol(),'0.0.0.0',PORT)
-    loop.run_until_complete(coro)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--port",help="the port you choose")
+args=parser.parse_args()
+if args.port:
+    print("We are connected to port "+args.port+". Now let't play this deadly game on client.")
+    PORT=int(args.port)
+else:
+    PORT=1121
+
+loop = asyncio.get_event_loop()
+coro = loop.create_server(EscapeRoomServerClientProtocol, '0.0.0.0',PORT)
+
+server = loop.run_until_complete(coro)
+
+try:
     loop.run_forever()
-    looop.close()
+except KeyboardInterrupt:
+    pass
+server.close()
+loop.run_until_complete(server.wait_closed())
+loop.close()
