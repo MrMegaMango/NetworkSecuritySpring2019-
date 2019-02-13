@@ -6,6 +6,7 @@ stdin_queue=[]
 def handle_stdin():
     line_in=sys.stdin.readline()
     line_in=line_in[:-1]
+    stdin_queue.append(line_in)
     #asyncio.async(q.put(sys.stdin.readline()))
 async def async_input(prompt):
     print(prompt,end="")
