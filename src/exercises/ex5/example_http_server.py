@@ -4,18 +4,25 @@ import datetime
 import os
 import mimetypes
 from os import curdir, sep
-#from datetime import datetime
-
 class ExampleHttpServer(asyncio.Protocol):
     def __init__(self,document_root):
         print("init")
         buffer=''.encode()
         self.buffer=buffer
-
     def connection_made(self,transport):
         self.transport=transport
 
     def data_received(self,data):
+        no_file="<!DOCTYPE html>\n\
+<html>\n\
+    <head>\
+        <meta charset=""utf-8"">\n\
+        <title>Not found</title>\n\
+    </head>\n\
+    <body>\n\
+        <h1>Zuo 404 page!</h1>\n\
+    </body>\n\
+</html>"
         self.buffer += data
         if not self.has_full_packet(self.buffer):
             return
@@ -34,10 +41,8 @@ class ExampleHttpServer(asyncio.Protocol):
             length=os.path.getsize(document_root+sep+path)
         except FileNotFoundError:
             print("404")
-            length=0
+            length=150
             status="404 Not Found"
-
-
         if status=="200 OK":
             print(document_root+sep+path)
             try:
@@ -49,11 +54,12 @@ class ExampleHttpServer(asyncio.Protocol):
                     mime_type,encoding=mimetypes.guess_type(document_root+sep+path+"/index.html")
                 except FileNotFoundError:
                     status="404 Not Found"
-                    length=0
+                    length=150
                     response="HTTP/1.1 "+status+"\r\nDate: "+str(datetime.datetime.now())+"\r\nServer: NetSec Prototype Server 1.0\r\n\
 Content-Length: "+str(length)+"\r\n\r\n"
                     print(response)
                     self.transport.write(response.encode())
+                    self.transport.write(no_file.encode())
                     return
             file=msg.read()
             print(file)
@@ -71,6 +77,8 @@ Content-Length: "+str(length)+"\r\n\r\n"
         self.transport.write(response.encode())
         if status=="200 OK":
             self.transport.write(file)
+        else:
+            self.transport.write(no_file.encode())
         return
     def has_full_packet(self,buffer):
         if buffer[-4:]=="\r\n\r\n".encode():
@@ -79,9 +87,6 @@ Content-Length: "+str(length)+"\r\n\r\n"
         else:
             print(buffer[-4:])
             return False
-
-
-
 HOST='localhost'
 PORT=8080
 document_root = sys.argv[1] # first command line parameter (use . for current folder)
