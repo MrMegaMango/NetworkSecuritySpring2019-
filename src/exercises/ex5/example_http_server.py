@@ -2,9 +2,9 @@ import asyncio
 import sys
 import datetime
 import os
+import mimetypes
 from os import curdir, sep
-
-#from http.server import HTTPServer, BaseHTTPRequestHandler
+#from datetime import datetime
 
 class ExampleHttpServer(asyncio.Protocol):
     def __init__(self,document_root):
@@ -31,24 +31,39 @@ class ExampleHttpServer(asyncio.Protocol):
         path=list(requests.keys())[1]
         status="200 OK"
         try:
-            length=os.path.getsize(curdir+sep+path)
+            length=os.path.getsize(document_root+sep+path)
         except FileNotFoundError:
             print("404")
             length=0
             status="404 Not Found"
 
 
-        #print(length)
         if status=="200 OK":
-            print(path)
-            msg=open(curdir+sep+path,"rb")
+            print(document_root+sep+path)
+            try:
+                msg=open(document_root+sep+path,"rb")
+                mime_type,encoding=mimetypes.guess_type(document_root+sep+path)
+            except IsADirectoryError:
+                try:
+                    msg=open(document_root+sep+path+"/index.html","rb")
+                    mime_type,encoding=mimetypes.guess_type(document_root+sep+path+"/index.html")
+                except FileNotFoundError:
+                    status="404 Not Found"
+                    length=0
+                    response="HTTP/1.1 "+status+"\r\nDate: "+str(datetime.datetime.now())+"\r\nServer: NetSec Prototype Server 1.0\r\n\
+Content-Length: "+str(length)+"\r\n\r\n"
+                    print(response)
+                    self.transport.write(response.encode())
+                    return
             file=msg.read()
             print(file)
+            statbuf=os.stat(document_root+sep+path).st_mtime
+            mod_time=datetime.datetime.fromtimestamp(statbuf)
             response="HTTP/1.1 "+status+"\r\nDate: "+str(datetime.datetime.now())+"\r\nServer: NetSec Prototype Server 1.0\r\n\
-Last-Modified: "+str(datetime.datetime.now())+"\r\n\
+Last-Modified: "+str(mod_time)+"\r\n\
 Content-Length: "+str(length)+"\r\n\
 Connection: close\r\n\
-Content-Type: text/html\r\n\r\n"
+Content-Type: "+mime_type+"\r\n\r\n"
         else:
             response="HTTP/1.1 "+status+"\r\nDate: "+str(datetime.datetime.now())+"\r\nServer: NetSec Prototype Server 1.0\r\n\
 Content-Length: "+str(length)+"\r\n\r\n"
@@ -56,11 +71,10 @@ Content-Length: "+str(length)+"\r\n\r\n"
         self.transport.write(response.encode())
         if status=="200 OK":
             self.transport.write(file)
-        #print("am I stuck here?")
         return
     def has_full_packet(self,buffer):
         if buffer[-4:]=="\r\n\r\n".encode():
-            #print("full package")
+            #full package
             return True
         else:
             print(buffer[-4:])
@@ -70,7 +84,7 @@ Content-Length: "+str(length)+"\r\n\r\n"
 
 HOST='localhost'
 PORT=8080
-document_root = sys.argv[1] # first command line parameter
+document_root = sys.argv[1] # first command line parameter (use . for current folder)
 loop = asyncio.get_event_loop()
 coro=loop.create_server(lambda: ExampleHttpServer(document_root), HOST, PORT)
 server = loop.run_until_complete(coro)
@@ -80,7 +94,3 @@ except:
     loop.run_until_complete(server.wait_closed())
 finally:
     loop.close()
-
-#server.close()
-
-#loop.close()
